@@ -12,7 +12,12 @@ import Combine
 
 @available(iOS 13.0, *)
 final public class Store<State: FluxState>: BindableObject {
-    public var didChange = PassthroughSubject<State, Never>()
+    
+    public enum Queue {
+        case main, background
+    }
+    
+    public let didChange = PassthroughSubject<State, Never>()
         
     private(set) public var state: State {
         didSet {
@@ -22,19 +27,29 @@ final public class Store<State: FluxState>: BindableObject {
         }
     }
     
+    private let backgroundQueue = DispatchQueue(label: "Flux queue",
+                                      qos: DispatchQoS.userInitiated)
     private let reducer: Reducer<State>
     private let lock = NSLock()
+    private let queueMode: Queue
     
-    public init(reducer: @escaping Reducer<State>, state: State) {
+    public init(reducer: @escaping Reducer<State>, state: State, queue: Queue) {
         self.reducer = reducer
         self.state = state
+        self.queueMode = queue
+    }
+    
+    private func currentQueue() -> DispatchQueue {
+        queueMode == .main ? DispatchQueue.main : backgroundQueue
     }
         
     public func dispatch(action: Action) {
-        lock.lock()
-        var state = self.state
-        state = reducer(state, action)
-        self.state = state
-        lock.unlock()
+        currentQueue().async {
+            self.lock.lock()
+            var state = self.state
+            state = self.reducer(state, action)
+            self.state = state
+            self.lock.unlock()
+        }
     }
 }

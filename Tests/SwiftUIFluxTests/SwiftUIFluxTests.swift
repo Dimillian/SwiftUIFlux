@@ -20,12 +20,14 @@ func testReducer(state: TestState, action: Action) -> TestState {
 
 @available(iOS 13.0, *)
 final class SwiftUIFluxTests: XCTestCase {
-    let store = Store<TestState>(reducer: testReducer, state: TestState())
+    let store = Store<TestState>(reducer: testReducer, state: TestState(), queue: .main)
     
     func testStore() {
         XCTAssert(store.state.count == 0, "Initial state is not valid")
         store.dispatch(action: IncrementAction())
-        XCTAssert(store.state.count == 1, "Reduced state increment is not valid")
+        DispatchQueue.main.async {
+            XCTAssert(self.store.state.count == 1, "Reduced state increment is not valid")
+        }
     }
 
     static var allTests = [
