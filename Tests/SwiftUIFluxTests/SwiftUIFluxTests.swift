@@ -1,3 +1,4 @@
+#if DEBUG
 import XCTest
 @testable import SwiftUIFlux
 
@@ -34,3 +35,4 @@ final class SwiftUIFluxTests: XCTestCase {
         ("testExample", testStore),
     ]
 }
+#endif

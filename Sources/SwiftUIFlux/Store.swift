@@ -10,7 +10,6 @@ import Foundation
 import SwiftUI
 import Combine
 
-@available(iOS 13.0, *)
 final public class Store<State: FluxState>: BindableObject {
     
     public enum Queue {
