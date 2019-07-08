@@ -67,7 +67,7 @@ final public class Store<State: FluxState>: BindableObject {
     private func _dispatch(action: Action) {
         currentQueue().async {
             self.lock.lock()
-            self.state = self.reducer(state, action)
+            self.state = self.reducer(self.state, action)
             self.lock.unlock()
         }
     }
