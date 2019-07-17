@@ -21,7 +21,7 @@ final public class Store<State: FluxState>: BindableObject {
     private(set) public var state: State {
         willSet {
             DispatchQueue.main.async {
-                self.willChange.send(self.state)
+                self.willChange.send(newValue)
             }
         }
     }
