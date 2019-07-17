@@ -16,12 +16,12 @@ final public class Store<State: FluxState>: BindableObject {
         case main, background
     }
     
-    public let didChange = PassthroughSubject<State, Never>()
+    public let willChange = PassthroughSubject<State, Never>()
         
     private(set) public var state: State {
-        didSet {
+        willSet {
             DispatchQueue.main.async {
-                self.didChange.send(self.state)
+                self.willChange.send(self.state)
             }
         }
     }
