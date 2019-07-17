@@ -140,7 +140,7 @@ struct MoviesActions {
 
 And then finally, you can dispatch them, if you look at the code of the reducer at the begining of this readme, you'll see how actions are reduced. The reducer is the only function where you are allowed to mutate your state.
 
-As everything in the AppState are Swift `struct`, you actually return a new copy of your state, which is alligned with the Redux archutecture. 
+As everything in the AppState are Swift `struct`, you actually return a new copy of your state, which is aligned with the Redux achitecture. 
 
 ``` Swift
 struct MovieDetail : View {
