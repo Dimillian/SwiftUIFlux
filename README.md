@@ -48,7 +48,7 @@ func moviesStateReducer(state: MoviesState, action: Action) -> MoviesState {
     return state
 }
 ```
-Finally, you have to add you `Store` wich will contain you current application state `AppState` as a global constant.
+Finally, you have to add you `Store` which will contain you current application state `AppState` as a global constant.
 
 ```Swift
 let store = Store<AppState>(reducer: appStateReducer,
