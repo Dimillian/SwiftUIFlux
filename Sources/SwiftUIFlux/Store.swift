@@ -11,7 +11,7 @@ import SwiftUI
 import Combine
 
 final public class Store<State: FluxState>: BindableObject {
-    public let willChange = PassthroughSubject<State, Never>()
+    public let willChange = PassthroughSubject<Void, Never>()
         
     private(set) public var state: State
 
@@ -43,9 +43,7 @@ final public class Store<State: FluxState>: BindableObject {
     }
     
     private func _dispatch(action: Action) {
-        DispatchQueue.main.async {
-            self.willChange.send(self.state)
-            self.state = self.reducer(self.state, action)
-        }
+        willChange.send()
+        state = reducer(state, action)
     }
 }
