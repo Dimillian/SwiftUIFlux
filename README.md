@@ -53,8 +53,7 @@ Finally, you have to add you `Store` wich will contain you current application s
 ```Swift
 let store = Store<AppState>(reducer: appStateReducer,
                             middleware: nil,
-                            state: AppState(),
-                            queue: .main)
+                            state: AppState())
 ```
 
 You instantiate with your initial application state and your main reducer function.
