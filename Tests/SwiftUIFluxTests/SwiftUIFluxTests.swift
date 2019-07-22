@@ -21,7 +21,7 @@ func testReducer(state: TestState, action: Action) -> TestState {
 
 @available(iOS 13.0, *)
 final class SwiftUIFluxTests: XCTestCase {
-    let store = Store<TestState>(reducer: testReducer, state: TestState(), queue: .main)
+    let store = Store<TestState>(reducer: testReducer, state: TestState())
     
     func testStore() {
         XCTAssert(store.state.count == 0, "Initial state is not valid")

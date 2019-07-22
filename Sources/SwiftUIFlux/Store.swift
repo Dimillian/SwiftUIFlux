@@ -39,7 +39,9 @@ final public class Store<State: FluxState>: BindableObject {
     }
 
     public func dispatch(action: Action) {
-        dispatchFunction(action)
+        DispatchQueue.main.async {
+            self.dispatchFunction(action)
+        }
     }
     
     private func _dispatch(action: Action) {
