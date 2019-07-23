@@ -12,12 +12,12 @@ public protocol ConnectedView: View {
     associatedtype Props
     associatedtype V: View
     
-    func map(state: State, dispatch: @escaping (Action) -> Void) -> Props
+    func map(state: State, dispatch: @escaping DispatchFunction) -> Props
     func body(props: Props) -> V
 }
 
 public extension ConnectedView {
-    func render(state: State, dispatch: @escaping (Action) -> Void) -> V {
+    func render(state: State, dispatch: @escaping DispatchFunction) -> V {
         let props = map(state: state, dispatch: dispatch)
         return body(props: props)
     }

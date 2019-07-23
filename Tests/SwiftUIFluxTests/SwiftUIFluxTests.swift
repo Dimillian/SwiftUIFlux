@@ -30,7 +30,7 @@ struct HomeView: ConnectedView {
         return "\(props.count)"
     }
     
-    func map(state: TestState, dispatch: @escaping (Action) -> Void) -> Props {
+    func map(state: TestState, dispatch: @escaping DispatchFunction) -> Props {
         return Props(count: state.count,
                      onIncrementCount: { dispatch(IncrementAction()) })
     }
