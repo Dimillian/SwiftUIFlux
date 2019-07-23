@@ -3,6 +3,8 @@ A very naive implementation of Redux using Combine BindableObject to serve as an
 
 ## Usage
 
+In this little guide, I'll show you two ways to access your proprerties from your state, one very naive, which works by using direct access to store.state global or injected `@EnvironmentObject` and the other one if you want to use `ConnectedView`.
+
 You first have to make a struct which will contain your application state and it needs to conform to `FluxState`. You can add any substate you want.
 
 ``` Swift
@@ -58,8 +60,8 @@ let store = Store<AppState>(reducer: appStateReducer,
 
 You instantiate with your initial application state and your main reducer function.
 
-And now the magical part, you can inject the store at the root of your SwiftUI application using `.environmentObject()`. 
-The most common way to do it is in your `SceneDelegate` when your initial view hierarchy is created.
+And now the part where you inject it in your SwiftUI app.
+The most common way to do it is in your `SceneDelegate` when your initiate your view hierarchy is created. You should use the provided `StoreProvider` to wrap you whole app root view hiearchy inside it. It'll auto magically inject the store as an `@EnvironmentObject` in all your views. 
 
 ``` Swift
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
@@ -70,7 +72,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         if let windowScene = scene as? UIWindowScene {
             let window = UIWindow(windowScene: windowScene)
-            let controller = UIHostingController(rootView: HomeView().environmentObject(store))
+           
+            let controller = UIHostingController(rootView:
+                StoreProvider(store: store) {
+                    HomeView()
+            })
+            
             window.rootViewController = controller
             self.window = window
             window.makeKeyAndVisible()
@@ -80,7 +87,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 ```
 
-Now, in any view where you want to access your application state, you can do it using `@EnvironmentObject`
+
+From there, there are two ways to access your state properties. 
+
+In any view where you want to access your application state, you can do it using `@EnvironmentObject`
 
 ``` Swift
 struct MovieDetail : View {
@@ -103,6 +113,43 @@ struct MovieDetail : View {
     }
 }
 ```
+
+This is the naive, brutal, not so redux compliant way, but it works. 
+
+Note that any view where you add explicilty add `@EnvironmentObject var store: Store<AppState>`will be redraw anywhere it's needed as your state is updated. The diff is done at the view level by SwiftUI. 
+
+And it's efficient enough that this library don't have to provide custom subscribers or a diffing mechanism. This is where it shine compared to a UIKit implementation. 
+
+You can also use `ConnectedView,` this is the new prefered way to do it as it feels more redux like. But the end result is exactly the same. You just have a better separation of concerns, no wild call to store.state and proper local properties.
+
+``` Swift
+struct MovieDetail : ConnectedView {  
+    struct Props {
+        let movie: Movie
+    }  
+
+    let movieId: Int
+    
+
+    func map(state: AppState, dispatch: @escaping DispatchFunction) -> Props {
+        return Props(movie: state.moviesState.movies[movieId]!)
+    }
+
+    func body(props: Props) -> some View {
+        ZStack(alignment: .bottom) {
+            List {
+                MovieBackdrop(movieId: props.movie)
+                // ...
+            }
+        }
+    }
+}
+```
+You have to implement a map function which convert properties from your state to local view props. And also a new body method which will provide you with your computed props at render time.
+
+You can look at more complexe examples from my app [here](https://github.com/Dimillian/MovieSwiftUI/blob/master/MovieSwift/MovieSwift/views/shared/contextMenu/MovieContextMenu.swift) and [there](https://github.com/Dimillian/MovieSwiftUI/blob/master/MovieSwift/MovieSwift/views/components/movieDetail/MovieDetail.swift).
+
+
 
 At some point, you'll need to make changes to your state, for that you need to create and dispatch `Action`
 
