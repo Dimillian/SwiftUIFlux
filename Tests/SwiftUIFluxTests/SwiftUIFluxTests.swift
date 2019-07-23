@@ -1,5 +1,6 @@
 #if DEBUG
 import XCTest
+import SwiftUI
 @testable import SwiftUIFlux
 
 struct TestState: FluxState {
@@ -19,6 +20,31 @@ func testReducer(state: TestState, action: Action) -> TestState {
     return state
 }
 
+struct HomeView: ConnectedView {
+    struct Props {
+        let count: Int
+        let onIncrementCount: () -> Void
+    }
+    
+    func text(props: Props) -> String{
+        return "\(props.count)"
+    }
+    
+    func map(state: TestState, dispatch: @escaping (Action) -> Void) -> Props {
+        return Props(count: state.count,
+                     onIncrementCount: { dispatch(IncrementAction()) })
+    }
+    
+    func body(props: Props) -> some View {
+        VStack {
+            Text(text(props: props))
+            Button(action: props.onIncrementCount) {
+                Text("Increment")
+            }
+        }
+    }
+}
+
 @available(iOS 13.0, *)
 final class SwiftUIFluxTests: XCTestCase {
     let store = Store<TestState>(reducer: testReducer, state: TestState())
@@ -29,6 +55,24 @@ final class SwiftUIFluxTests: XCTestCase {
         DispatchQueue.main.async {
             XCTAssert(self.store.state.count == 1, "Reduced state increment is not valid")
         }
+    }
+    
+    func testViewProps() {
+        let view = StoreProvider(store: store) {
+            HomeView()
+        }
+        store.dispatch(action: IncrementAction())
+        DispatchQueue.main.async {
+            var props = view.content().map(state: self.store.state, dispatch: self.store.dispatch(action:))
+            XCTAssert(props.count == 1, "View state is not correct")
+            props.onIncrementCount()
+            DispatchQueue.main.async {
+                props = view.content().map(state: self.store.state, dispatch: self.store.dispatch(action:))
+                XCTAssert(props.count == 2, "View state is not correct")
+            }
+            
+        }
+        
     }
 
     static var allTests = [
