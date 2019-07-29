@@ -11,8 +11,7 @@ import SwiftUI
 import Combine
 
 final public class Store<State: FluxState>: ObservableObject {
-        
-    private(set) public var state: State
+    @Published public var state: State
 
     private var dispatchFunction: DispatchFunction!
     private let reducer: Reducer<State>
@@ -44,7 +43,6 @@ final public class Store<State: FluxState>: ObservableObject {
     }
     
     private func _dispatch(action: Action) {
-        objectWillChange.send()
         state = reducer(state, action)
     }
 }
