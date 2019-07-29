@@ -10,7 +10,7 @@ import Foundation
 import SwiftUI
 import Combine
 
-final public class Store<State: FluxState>: BindableObject {
+final public class Store<State: FluxState>: ObservableObject {
     public let willChange = PassthroughSubject<Void, Never>()
         
     private(set) public var state: State
