@@ -50,7 +50,7 @@ func moviesStateReducer(state: MoviesState, action: Action) -> MoviesState {
     return state
 }
 ```
-Finally, you have to add you `Store` wich will contain you current application state `AppState` as a global constant.
+Finally, you have to add you `Store` which will contain you current application state `AppState` as a global constant.
 
 ```Swift
 let store = Store<AppState>(reducer: appStateReducer,
@@ -153,7 +153,7 @@ You can look at more complexe examples from my app [here](https://github.com/Dim
 
 At some point, you'll need to make changes to your state, for that you need to create and dispatch `Action`
 
-`AsyncAction` is available as part of this library, and is the right place to do network query, if'll be executed by an internal `middleware` when you dispatch it.
+`AsyncAction` is available as part of this library, and is the right place to do network query, it'll be executed by an internal `middleware` when you dispatch it.
 
 You can then chain any action when you get a result or an error.
 
