@@ -8,21 +8,21 @@
 import SwiftUI
 
 public protocol ConnectedView: View {
-    associatedtype State: FluxState
+    associatedtype StoreState: FluxState
     associatedtype Props
     associatedtype V: View
     
-    func map(state: State, dispatch: @escaping DispatchFunction) -> Props
+    func map(state: StoreState, dispatch: @escaping DispatchFunction) -> Props
     func body(props: Props) -> V
 }
 
 public extension ConnectedView {
-    func render(state: State, dispatch: @escaping DispatchFunction) -> V {
+    func render(state: StoreState, dispatch: @escaping DispatchFunction) -> V {
         let props = map(state: state, dispatch: dispatch)
         return body(props: props)
     }
     
-    var body: StoreConnector<State, V> {
+    var body: StoreConnector<StoreState, V> {
         return StoreConnector(content: render)
     }
 }
