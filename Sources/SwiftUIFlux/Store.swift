@@ -10,15 +10,15 @@ import Foundation
 import SwiftUI
 import Combine
 
-final public class Store<State: FluxState>: ObservableObject {
-    @Published public var state: State
+final public class Store<StoreState: FluxState>: ObservableObject {
+    @Published public var state: StoreState
 
     private var dispatchFunction: DispatchFunction!
-    private let reducer: Reducer<State>
+    private let reducer: Reducer<StoreState>
     
-    public init(reducer: @escaping Reducer<State>,
-                middleware: [Middleware<State>] = [],
-                state: State) {
+    public init(reducer: @escaping Reducer<StoreState>,
+                middleware: [Middleware<StoreState>] = [],
+                state: StoreState) {
         self.reducer = reducer
         self.state = state
         
