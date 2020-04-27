@@ -25,6 +25,6 @@ let package = Package(
             dependencies: ["SwiftUIFlux"]),
     ],
     swiftLanguageVersions: [
-        .version("5.1")
+        .version("5")
     ]
 )
