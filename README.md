@@ -1,3 +1,5 @@
+![Swift](https://github.com/Dimillian/SwiftUIFlux/workflows/Swift/badge.svg)
+
 # SwiftUIFlux
 A very naive implementation of Redux using Combine BindableObject to serve as an example
 
